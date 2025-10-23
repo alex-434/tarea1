@@ -3,25 +3,23 @@ import express from "express";
 import morgan from "morgan";
 import { AppDataSource, connectDB } from "./config/configDb.js";
 import { routerApi } from "./routes/index.routes.js";
+import {SERVER_HOST, SERVER_PORT} from "./config/configEnv.js";
 
 const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
-// Ruta principal de bienvenida
+
 app.get("/", (req, res) => {
   res.send("¡Bienvenido a mi API REST con TypeORM!");
 });
 
-// Inicializa la conexión a la base de datos
+
 connectDB()
   .then(() => {
-    // Carga todas las rutas de la aplicación
     routerApi(app);
-
-    // Levanta el servidor Express
     const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-      console.log(`Servidor iniciado en http://localhost:${PORT}`);
+    app.listen(SERVER_PORT, SERVER_HOST, () => {
+      console.log(`Servidor iniciado en http:${SERVER_HOST}:${SERVER_PORT}`);
     });
   })
   .catch((error) => {
